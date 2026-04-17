@@ -60,4 +60,52 @@ public class MatrixAnalyzerTest {
         MatrixAnalyzer.displayMatrix(new int[][]{{1, 2}, {3, 4}});
         MatrixAnalyzer.main(new String[0]);
     }
+
+    /* --- Path Coverage Extension (Issue #2) --- */
+
+    @Test
+    public void testFindMaxInRows_PathCoverage() {
+        // Path: Matrix with all negative numbers
+        int[][] negativeMatrix = {
+            {-10, -5, -20},
+            {-1, -2}
+        };
+        int[] result = MatrixAnalyzer.findMaxInRows(negativeMatrix);
+        assertEquals(-5, result[0]);
+        assertEquals(-1, result[1]);
+
+        // Path: Varying row lengths (Ragged matrix)
+        int[][] ragged = {
+            {1},
+            {1, 2, 3},
+            {4, 2}
+        };
+        int[] raggedResult = MatrixAnalyzer.findMaxInRows(ragged);
+        assertArrayEquals(new int[]{1, 3, 4}, raggedResult);
+    }
+
+    @Test
+    public void testIsSymmetric_PathCoverage() {
+        // Path: 1x1 Matrix (trivially symmetric)
+        int[][] single = {{1}};
+        assertTrue(MatrixAnalyzer.isSymmetric(single));
+
+        // Path: Large symmetric matrix
+        int[][] largeSymmetric = {
+            {1, 2, 3, 4},
+            {2, 1, 5, 6},
+            {3, 5, 1, 7},
+            {4, 6, 7, 1}
+        };
+        assertTrue(MatrixAnalyzer.isSymmetric(largeSymmetric));
+
+        // Path: Not symmetric at the very last comparison
+        int[][] almostSymmetric = {
+            {1, 2, 3},
+            {2, 4, 5},
+            {3, 6, 6} // (2,1) is 5, (1,2) is 6? No, wait. 
+                      // matrix[2][1] is 6, matrix[1][2] is 5.
+        };
+        assertFalse(MatrixAnalyzer.isSymmetric(almostSymmetric));
+    }
 }
